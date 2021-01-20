@@ -11,5 +11,6 @@ int main(){
     printf("Ingrese su nombre porfa: ");
     scanf("%s", nombre);
     printf("Hola %s, su id de proceso es %d", nombre, pid);
+    printf("\nHola Mundo\n");
     return 0;
 }
