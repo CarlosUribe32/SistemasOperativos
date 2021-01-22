@@ -11,4 +11,5 @@ int main(void){
     printf("%15.12s\n", s);
     printf("%-15.12s\n", s);
     printf("%3.12s\n", s);
+    printf("%7.16s", s);
 }
