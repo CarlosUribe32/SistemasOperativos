@@ -1,3 +1,11 @@
-Hola mundo, que tal
-No se como funciona 
-esta carajada
+Materia  Nota  Creditos  
+POO  4.800000  1869377380  
+SO  4.000000  6383975  
+33ƒ@  4.100000  3  
+Metodologia  4.500000  2  
+  0.000000  0  
+Total materias 5
+Total ganadas 4
+Total perdidas 1
+Promedio: 3.480000, Total de creditos: 1875761360
+63010193408.000000, Total de creditos: 1635020686

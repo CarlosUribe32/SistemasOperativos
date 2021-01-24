@@ -4,7 +4,7 @@ Creditos: 3
 Materia: SO
 Nota: 4
 Creditos: 3
-Materia: Calculo D
+Materia: CalculoD
 Nota: 4.1
 Creditos: 3
 Materia: Metodologia
