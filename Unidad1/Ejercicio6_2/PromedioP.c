@@ -30,28 +30,27 @@ int main(){
         printf("No se puede abrir %s o %s\n", INPUT_FILE, OUTPUT_FILE);
         exit(8);
     }
+    fprintf(on_file, "Materia  Nota  Creditos  \n");
+    int totCreditos =0;
     while(1){
+        ch = fgetc(in_file);
+        ch = fgetc(in_file);
+        ch = fgetc(in_file);
         ch = fgetc(in_file);
         if(ch == EOF)
             break;
         fscanf(in_file, "%s %s %s %f %s %d", s1, (char *)(pos1+nMaterias), s2, (float *)(pos2+nMaterias), s3, (int *)(pos3+nMaterias));
-        printf("%s %f %d\n",(char *)(pos1+nMaterias), *(pos2+nMaterias), *(pos3+nMaterias));
+        printf("%s %f %d\n",(pos1+nMaterias), *(pos2+nMaterias), *(pos3+nMaterias));
+        fprintf(on_file, "%s  %f  %d  \n", (char *)(pos1+nMaterias), *(pos2+nMaterias), *(pos3+nMaterias));
+        totCreditos += *(pos3+nMaterias);
         nMaterias++;
     }
-
-    fprintf(on_file, "Materia  Nota  Creditos  \n");
-    for (size_t i = 0; i < nMaterias; i++)
-    {
-        fprintf(on_file, "%s  %f  %d  \n", (char *)(pos1+i), *(pos2+i), *(pos3+i));
-    }
     float promedio =0;
-    int totCreditos =0;
     int matGan=0;
     int matPer=0;
     for (size_t i = 0; i < nMaterias; i++)
     {
         promedio += *(pos2+i);
-        totCreditos += *(pos3+i);
         if(*(pos2+i)>=3)
             matGan++;
         else
@@ -59,9 +58,9 @@ int main(){
     }
     fprintf(on_file, "Total materias %d\nTotal ganadas %d\nTotal perdidas %d\n", nMaterias, matGan, matPer);
     fprintf(on_file, "Promedio: %f, Total de creditos: %d\n", promedio/nMaterias, totCreditos);
-    // free(pos1);
-    // free(pos2);
-    // free(pos3);
+    free(pos1);
+    free(pos2);
+    free(pos3);
 
     fclose(in_file);
     fclose(on_file);

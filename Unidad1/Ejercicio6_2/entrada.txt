@@ -4,9 +4,12 @@ Creditos: 3
 Materia: SO
 Nota: 4
 Creditos: 3
-Materia: CalculoD
-Nota: 4.1
+Materia: Calculo
+Nota: 4.2
+Creditos: 2
+Materia: Estructuras
+Nota: 2
 Creditos: 3
 Materia: Metodologia
-Nota: 4.5
-Creditos: 2
+Nota: 5
+Creditos: 1
