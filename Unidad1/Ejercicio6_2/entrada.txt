@@ -1,0 +1,12 @@
+Materia: POO
+Nota: 4.8
+Creditos: 3
+Materia: SO
+Nota: 4
+Creditos: 3
+Materia: Calculo D
+Nota: 4.1
+Creditos: 3
+Materia: Metodologia
+Nota: 4.5
+Creditos: 2
