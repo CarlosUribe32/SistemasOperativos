@@ -18,7 +18,8 @@ int main(void){
     scanf("%d[^\n]", &pos2);
     if(pos2>=1 && pos2<=pos){
         printf("Ingrese el valor\n");
-        scanf("%s[^\n]", (array+pos2-1));
+        char *a = array+pos2-1;
+        scanf("%s[^\n]", a);
         contenido(array, pos+1);
     }
     else
