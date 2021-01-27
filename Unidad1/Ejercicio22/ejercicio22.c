@@ -2,27 +2,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char INPUT_FILE[40];
-const char OUTPUT_FILE[40];
+// const char INPUT_FILE[40];
+// const char OUTPUT_FILE[40];
 
 void encriptar(FILE *, FILE *);
 void desencriptar(FILE *, FILE *);
 
-int main(){
+int main(int argc, char *argv[]){
     int op;
     printf("Ingrese 1 si quiere encriptar, ingrese 2 si quiere desencriptar\n");
     scanf("%d[^\n]", &op);
     getc(stdin);
 
-    printf("Ingrese el archivo origen\n");
-    scanf("%s[^\n]", INPUT_FILE);
-    getc(stdin);
-    printf("Ingrese el archivo de salida\n");
-    scanf("%s[^\n]", OUTPUT_FILE);
-    getc(stdin);
+    // printf("Ingrese el archivo origen\n");
+    // scanf("%s[^\n]", INPUT_FILE);
+    // getc(stdin);
+    // printf("Ingrese el archivo de salida\n");
+    // scanf("%s[^\n]", OUTPUT_FILE);
+    // getc(stdin);
 
-    FILE *in_file = fopen(INPUT_FILE, "r");
-    FILE *on_file = fopen(OUTPUT_FILE, "r+");
+    FILE *in_file = fopen(argv[1], "r");
+    FILE *on_file = fopen(argv[2], "r+");
 
     if(in_file == NULL || on_file==NULL){
         printf("No se puede abrir %s o %s\n", INPUT_FILE, OUTPUT_FILE);
