@@ -5,14 +5,14 @@
 // const char INPUT_FILE[40];
 // const char OUTPUT_FILE[40];
 
-void encriptar(FILE *, FILE *);
-void desencriptar(FILE *, FILE *);
+void xor(FILE *, FILE *);
+void not(FILE *, FILE *);
 
 int main(int argc, char *argv[]){
-    int op;
-    printf("Ingrese 1 si quiere encriptar, ingrese 2 si quiere desencriptar\n");
-    scanf("%d[^\n]", &op);
-    getc(stdin);
+    // int op;
+    // printf("Ingrese 1 si quiere encriptar, ingrese 2 si quiere desencriptar\n");
+    // scanf("%d[^\n]", &op);
+    // getc(stdin);
 
     // printf("Ingrese el archivo origen\n");
     // scanf("%s[^\n]", INPUT_FILE);
@@ -25,37 +25,38 @@ int main(int argc, char *argv[]){
     FILE *on_file = fopen(argv[2], "r+");
 
     if(in_file == NULL || on_file==NULL){
-        printf("No se puede abrir %s o %s\n", INPUT_FILE, OUTPUT_FILE);
+        printf("No se puede abrir %s o %s\n", argv[1], argv[2]);
         exit(8);
     }
-
-    if(op==1)
-        encriptar(in_file, on_file);
-    else if(op==2)
-        desencriptar(in_file, on_file);
+    
+    
+    if(strncmp("xor", argv[3], 3) == 0)
+        xor(in_file, on_file);
+    else if(strncmp("not", argv[3], 3) == 0)
+        not(in_file, on_file);
     
     fclose(in_file);
     fclose(on_file);
     return 0;
 }
 
-void encriptar(FILE * in_file, FILE * on_file){
+void xor(FILE * in_file, FILE * on_file){
     int ch;
     while(1){
         ch = fgetc(in_file);
         if(ch == EOF)
             break;
-        ch*=2;
+        ch=ch^0xFF;
         fputc(ch, on_file);
     }
 }
-void desencriptar(FILE * in_file, FILE * on_file){
+void not(FILE * in_file, FILE * on_file){
     int ch;
     while(1){
         ch = fgetc(in_file);
         if(ch == EOF)
             break;
-        ch/=2;
+        ch = ~ch;
         fputc(ch, on_file);
     }
 }
