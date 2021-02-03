@@ -26,6 +26,8 @@ char checkOf(FILE *archivo){
 
 bdActual * mkdb(char[30], int);
 bdActual *loaddb(FILE *);
+void savedb(FILE *, bdActual *);
+bdActual * mkreg(int, char[30], int, bdActual *); //Aca voy
 
 int main(void){
 
@@ -50,11 +52,19 @@ int main(void){
             if(in_file == NULL)
                 printf("No se puede abrir %s\n", par1);
             else{
-
+                pbd = loaddb(in_file);
+                printf("Se cargo con exito la BD %s\n", pbd->nombre);
+                fclose(in_file);
             }
         }
         else if (strcmp(comando, "savedb")==0){
-
+            fscanf(stdin, "%s", par1);
+            FILE *on_file = fopen(par1, "r+");
+            if(on_file == NULL)
+                printf("No se puede abrir %s\n", par1);
+            else{
+                fclose(on_file);
+            }
         }
         else if (strcmp(comando, "readall")==0){
 
@@ -63,7 +73,7 @@ int main(void){
 
         }
         else if (strcmp(comando, "mkreg")==0){
-
+            fscanf(stdin, "%d %s %d", &par2, par1, &par3);
         }
         else if (strcmp(comando, "readreg")==0){
 
@@ -96,4 +106,13 @@ bdActual *loaddb(FILE *in_file){
     }
     bd.size = i;
     return &bd;
+}
+
+void savedb(FILE *on_file, bdActual *pbd){
+    fprintf(on_file, "%s %d\n", pbd->nombre, pbd->numRegistros);
+    for (int i = 0; i < pbd->size; i++)
+    {
+        estudiante *pReg = (pbd->registro)+i;
+        fprintf(on_file, "%d %s %d\n", pReg->cedula, pReg->nombre, pReg->semestre);
+    }
 }
