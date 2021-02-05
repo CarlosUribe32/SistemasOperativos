@@ -73,12 +73,12 @@ int main(void){
         else if (strcmp(comando, "mkreg")==0){
             fscanf(stdin, "%d %s %d", &par2, par1, &par3);
             mkreg(par2, par1, par3);
-            printf("Se registro correctamente la informacion\n");
         }
         else if (strcmp(comando, "readreg")==0){
 
         }
         getc(stdin);
+        
     } while (strcmp(comando, "exit")!=0);
     
     return 0;
@@ -94,27 +94,26 @@ void mkdb(char name[30], int size){
 void loaddb(FILE *in_file){
     char ch;
     char name[30], people[30];
-    int i=0, size, ced, sem;
-    fscanf(in_file, "%s %d", name, &size);
-    bdActual bd = {name, size, 0, (estudiante *)malloc(sizeof(estudiante)*size)};
-    while(ch!=EOF){
-        fscanf(in_file, "%d %s %d", ced, people , sem);
-        bd.registro+i-->ced;
-        bd.registro+i-->people;
-        bd.registro+i-->sem;
-        i++;
-        ch = checkOf(in_file);
+    int size, ced, sem, actual;
+    fscanf(in_file, "%s %d %d", name, &size, &actual);
+
+    strcpy(pbd->nombre, name);
+    pbd->numRegistros = size;
+    pbd->size = actual;
+    pbd->registro = (estudiante *)malloc(sizeof(estudiante)*size);
+    for(int i=0; i< pbd->size; i++){
+        fscanf(in_file, "%d %s %d", &ced, people , &sem);
+        pbd->registro[i].cedula = ced;
+        strcpy(pbd->registro[i].nombre, people);
+        pbd->registro[i].semestre = sem;
     }
-    bd.size = i;
-    return &bd;
 }
 
 void savedb(FILE *on_file){
-    fprintf(on_file, "%s %d\n", *(pbd->nombre), (pbd->numRegistros));
+    fprintf(on_file, "%s %d %d\n", pbd->nombre, pbd->numRegistros, pbd->size);
     for (int i = 0; i < pbd->size; i++)
     {
-        estudiante *pReg = pbd->registro+i;
-        fprintf(on_file, "%d %s %d\n", (pReg->cedula), (pReg->nombre), (pReg->semestre));
+        fprintf(on_file, "%d %s %d\n", pbd->registro[i].cedula, pbd->registro[i].nombre, pbd->registro[i].semestre);
     }
 }
 
@@ -123,9 +122,18 @@ void mkreg(int ced, char nombre[30], int semestre){
         printf("La base de datos ya esta en su capacidad total");
         return;
     }
+    for (int i = 0; i < pbd->size; i++)
+    {
+        if(pbd->registro[i].cedula==ced){
+            printf("Ya hay un registro con este numero de cedula\n");
+            return;
+        }
+    }
+    
     int i = pbd->size;
     pbd->registro[i].cedula = ced;
     strcpy(pbd->registro[i].nombre, nombre);
     pbd->registro[i].semestre = semestre;
     pbd->size = ++i;
+    printf("Se registro correctamente la informacion\n");
 }
