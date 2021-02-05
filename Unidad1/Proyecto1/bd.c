@@ -15,7 +15,7 @@ typedef struct{
     estudiante *registro;
 }bdActual;
 
-char checkOf(FILE *archivo){
+char checkOf(FILE *archivo){//Obra de Manguito uwu
     char ch;
     ch = fgetc(archivo);
     ch = fgetc(archivo);
@@ -24,14 +24,10 @@ char checkOf(FILE *archivo){
     return ch;
 }
 
-bdActual * mkdb(char[30], int);
-bdActual *loaddb(FILE *);
-void savedb(FILE *, bdActual *);
-bdActual * mkreg(int, char[30], int, bdActual *); //Aca voy
+bdActual bd;
+bdActual *pbd = &bd; 
 
 int main(void){
-
-    bdActual *pbd;
     char comando [10];
     char par1[30];
     int par2;
@@ -43,7 +39,7 @@ int main(void){
         if(strcmp(comando, "mkdb")==0)
         {
             fscanf(stdin, "%s %d", par1, &par2);
-            pbd = mkdb(par1, par2);
+            mkdb(par1, par2);
             printf("Se contruyo con exito la BD %s\n", par1);
         }
         else if (strcmp(comando, "loaddb")==0){
@@ -52,18 +48,20 @@ int main(void){
             if(in_file == NULL)
                 printf("No se puede abrir %s\n", par1);
             else{
-                pbd = loaddb(in_file);
+                loaddb(in_file);
                 printf("Se cargo con exito la BD %s\n", pbd->nombre);
                 fclose(in_file);
             }
         }
         else if (strcmp(comando, "savedb")==0){
             fscanf(stdin, "%s", par1);
-            FILE *on_file = fopen(par1, "r+");
+            FILE *on_file = fopen(par1, "w+");
             if(on_file == NULL)
                 printf("No se puede abrir %s\n", par1);
             else{
+                savedb(on_file);
                 fclose(on_file);
+                printf("Se guardo correctamente la BD\n");
             }
         }
         else if (strcmp(comando, "readall")==0){
@@ -74,6 +72,8 @@ int main(void){
         }
         else if (strcmp(comando, "mkreg")==0){
             fscanf(stdin, "%d %s %d", &par2, par1, &par3);
+            mkreg(par2, par1, par3);
+            printf("Se registro correctamente la informacion\n");
         }
         else if (strcmp(comando, "readreg")==0){
 
@@ -84,13 +84,14 @@ int main(void){
     return 0;
 }
 
-bdActual * mkdb(char name[30], int size){
-    bdActual bd = {name, size, 0, (estudiante *)malloc(sizeof(estudiante)*size)};
-    bdActual *pbd = &bd;
-    return pbd;
+void mkdb(char name[30], int size){
+    strcpy(pbd->nombre, name);
+    pbd->numRegistros = size;
+    pbd->registro = (estudiante *)malloc(sizeof(estudiante)*size);
+    pbd->size = 0;
 }
 
-bdActual *loaddb(FILE *in_file){
+void loaddb(FILE *in_file){
     char ch;
     char name[30], people[30];
     int i=0, size, ced, sem;
@@ -108,11 +109,23 @@ bdActual *loaddb(FILE *in_file){
     return &bd;
 }
 
-void savedb(FILE *on_file, bdActual *pbd){
-    fprintf(on_file, "%s %d\n", pbd->nombre, pbd->numRegistros);
+void savedb(FILE *on_file){
+    fprintf(on_file, "%s %d\n", *(pbd->nombre), (pbd->numRegistros));
     for (int i = 0; i < pbd->size; i++)
     {
-        estudiante *pReg = (pbd->registro)+i;
-        fprintf(on_file, "%d %s %d\n", pReg->cedula, pReg->nombre, pReg->semestre);
+        estudiante *pReg = pbd->registro+i;
+        fprintf(on_file, "%d %s %d\n", (pReg->cedula), (pReg->nombre), (pReg->semestre));
     }
+}
+
+void mkreg(int ced, char nombre[30], int semestre){
+    if(pbd->size==pbd->numRegistros){
+        printf("La base de datos ya esta en su capacidad total");
+        return;
+    }
+    int i = pbd->size;
+    pbd->registro[i].cedula = ced;
+    strcpy(pbd->registro[i].nombre, nombre);
+    pbd->registro[i].semestre = semestre;
+    pbd->size = ++i;
 }
