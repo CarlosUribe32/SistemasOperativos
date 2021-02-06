@@ -65,17 +65,19 @@ int main(void){
             }
         }
         else if (strcmp(comando, "readall")==0){
-
+            readall();
+            printf("Se leyeron todos los registros de la Base de datos\n");
         }
         else if (strcmp(comando, "readsize")==0){
-
+            readsize();
         }
         else if (strcmp(comando, "mkreg")==0){
             fscanf(stdin, "%d %s %d", &par2, par1, &par3);
             mkreg(par2, par1, par3);
         }
         else if (strcmp(comando, "readreg")==0){
-
+            fscanf(stdin, "%d", &par2);
+            readreg(par2);
         }
         getc(stdin);
         
@@ -119,7 +121,7 @@ void savedb(FILE *on_file){
 
 void mkreg(int ced, char nombre[30], int semestre){
     if(pbd->size==pbd->numRegistros){
-        printf("La base de datos ya esta en su capacidad total");
+        printf("La base de datos ya esta en su capacidad total\n");
         return;
     }
     for (int i = 0; i < pbd->size; i++)
@@ -136,4 +138,27 @@ void mkreg(int ced, char nombre[30], int semestre){
     pbd->registro[i].semestre = semestre;
     pbd->size = ++i;
     printf("Se registro correctamente la informacion\n");
+}
+
+void readall(){
+    printf("Base de datos: %s\n", pbd->nombre);
+    for (int i = 0; i < pbd->size; i++)
+    {
+        printf("%d %s %d\n", pbd->registro[i].cedula, pbd->registro[i].nombre, pbd->registro[i].semestre);
+    }
+}
+
+void readsize(){
+    printf("Base de datos: %s, numero de registros: %d\n", pbd->nombre, pbd->size);
+}
+
+void readreg(int par2){
+    for (int i = 0; i < pbd->size; i++)
+    {
+        if(pbd->registro[i].cedula==par2){
+            printf("%d %s %d\n", pbd->registro[i].cedula, pbd->registro[i].nombre, pbd->registro[i].semestre);
+            return;
+        }
+    }
+    printf("No se encontro el registro\n");
 }
