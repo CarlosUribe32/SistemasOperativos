@@ -49,7 +49,6 @@ int main(void){
                 printf("No se puede abrir %s\n", par1);
             else{
                 loaddb(in_file);
-                printf("Se cargo con exito la BD %s\n", pbd->nombre);
                 fclose(in_file);
             }
         }
@@ -61,12 +60,10 @@ int main(void){
             else{
                 savedb(on_file);
                 fclose(on_file);
-                printf("Se guardo correctamente la BD\n");
             }
         }
         else if (strcmp(comando, "readall")==0){
             readall();
-            printf("Se leyeron todos los registros de la Base de datos\n");
         }
         else if (strcmp(comando, "readsize")==0){
             readsize();
@@ -75,14 +72,27 @@ int main(void){
             fscanf(stdin, "%d %s %d", &par2, par1, &par3);
             mkreg(par2, par1, par3);
         }
-        else if (strcmp(comando, "readreg")==0){
+        else if (strcmp(comando, "readreg")==0 ){
             fscanf(stdin, "%d", &par2);
             readreg(par2);
         }
         getc(stdin);
         
     } while (strcmp(comando, "exit")!=0);
-    
+    printf("Quiere salvar la BD? (Con el comando)\n");
+    scanf("%s", comando);
+
+    if (strcmp(comando, "savedb")==0){
+        fscanf(stdin, "%s", par1);
+        FILE *on_file = fopen(par1, "w+");
+        if(on_file == NULL)
+            printf("No se puede abrir %s\n", par1);
+        else{
+            savedb(on_file);
+            fclose(on_file);
+        }
+    }
+    getc(stdin);
     return 0;
 }
 
@@ -109,6 +119,7 @@ void loaddb(FILE *in_file){
         strcpy(pbd->registro[i].nombre, people);
         pbd->registro[i].semestre = sem;
     }
+    printf("Se cargo con exito la BD %s\n", pbd->nombre);
 }
 
 void savedb(FILE *on_file){
@@ -117,6 +128,7 @@ void savedb(FILE *on_file){
     {
         fprintf(on_file, "%d %s %d\n", pbd->registro[i].cedula, pbd->registro[i].nombre, pbd->registro[i].semestre);
     }
+    printf("Se guardo correctamente la BD\n");
 }
 
 void mkreg(int ced, char nombre[30], int semestre){
