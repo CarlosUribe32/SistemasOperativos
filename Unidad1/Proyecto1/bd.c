@@ -93,6 +93,7 @@ int main(void){
         }
     }
     getc(stdin);
+    free(pbd->registro);
     return 0;
 }
 
