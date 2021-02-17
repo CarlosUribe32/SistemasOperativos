@@ -75,6 +75,9 @@ int main(void){
         else if(strcmp(comando, "gdb")==0){
             gdb();
         }
+        else if (strcmp(comando, "svdb")==0){
+            svdb();
+        }
 
     } while (strcmp(comando, "exit")!=0);
     destroyP();
@@ -149,4 +152,24 @@ void gdb(){
         return;
     }
     printf("BD activa - Nombre: %s - Tamaño: %d - Registros disponibles: %d\n", pList->pbdActual->nombre, pList->pbdActual->numRegistros, (pList->pbdActual->numRegistros - pList->pbdActual->size));
+}
+
+void svdb(){
+    if(pList->sel==0){
+        printf("No hay ninguna BD seleccionada\n");
+        return;
+    }
+    char doc[30];
+    strcpy(doc, pList->pbdActual->nombre);
+    FILE *on_file = fopen(strcat(doc, ".txt"), "w+");
+    if(on_file == NULL){
+        printf("No se puede abrir %s\n", doc);
+        return;
+    }
+    fprintf(on_file, "%s %d %d\n", pList->pbdActual->nombre, pList->pbdActual->numRegistros, pList->pbdActual->size);
+    for (int i = 0; i < pList->pbdActual->size; i++)
+    {
+        fprintf(on_file, "%d %s %d\n", pList->pbdActual->registro[i].cedula, pList->pbdActual->registro[i].nombre, pList->pbdActual->registro[i].semestre);
+    }
+    printf("Se guardo correctamente la BD\n");
 }
