@@ -19,16 +19,23 @@ typedef struct{
     bd * pbd;
     bd * pbdActual;
     int size;
+    int sel;
 }bdList;
 
 bdList * pList;
 bdList * createP(){
     bdList * pL = malloc(sizeof(bdList));
     pL->pbd = (bd *)malloc(sizeof(bd)*30);
+    pL->pbdActual = malloc(sizeof(bd));
     pL->size=0;
+    pL->sel =0;
     return pL;
 }
 void destroyP(){
+    for (int i = 0; i < pList->size; i++){
+        free(pList->pbd[i].registro);
+    }
+    
     free(pList->pbd);
     free(pList);
 }
@@ -58,6 +65,14 @@ int main(void){
                 fclose(in_file);
             }
         }
+        else if(strcmp(comando, "lsdbs")==0){
+            lsdbs();
+        }
+        else if(strcmp(comando, "sdb")==0){
+            fscanf(stdin, "%s", par1);
+            sdb(par1);
+        }
+
     } while (strcmp(comando, "exit")!=0);
     destroyP();
 }
@@ -68,7 +83,9 @@ void mdb(char name[30], int size){
     pList->pbd[pList->size].registro = (estudiante *)malloc(sizeof(estudiante)*size);
     pList->pbd[pList->size].size = 0;
     pList->size = pList->size+1;
+    printf("Se creo con exito la BD %s\n", pList->pbd[pList->size].nombre);
 }
+
 void ldb(FILE *in_file){
     char ch;
     char name[30], people[30];
@@ -92,4 +109,25 @@ void ldb(FILE *in_file){
     }
     printf("Se cargo con exito la BD %s\n", pList->pbd[pList->size].nombre);
     pList->size = pList->size+1;
+}
+
+void lsdbs(){
+    printf("Cantidad de BD: %d\n", pList->size);
+    for (int i = 0; i < pList->size; i++){
+        printf("BD: %s - Tamaño: %d - Registros: %d\n", pList->pbd[i].nombre, pList->pbd[i].numRegistros, pList->pbd[i].size);
+    }
+}
+
+void sdb(char name[30]){
+    for (int i = 0; i < pList->size; i++){
+        if(strcmp(pList->pbd[i].nombre, name)==0){
+            printf("Se encontro la BD %s\n", name);
+            pList->pbdActual = pList->pbd +i;
+            pList->sel = 1;
+            break;
+        }
+    }
+    if(pList->sel==0){
+        printf("Esta BD no existe\n");
+    }
 }
