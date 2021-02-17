@@ -72,12 +72,23 @@ int main(void){
             fscanf(stdin, "%s", par1);
             sdb(par1);
         }
+        else if(strcmp(comando, "gdb")==0){
+            gdb();
+        }
 
     } while (strcmp(comando, "exit")!=0);
     destroyP();
 }
 
 void mdb(char name[30], int size){
+    for (int i = 0; i < pList->size; i++)
+    {
+        if(strcmp(pList->pbd[i].nombre, name)==0){
+            printf("Esta BD ya existe\n");
+            return;
+        }
+    }
+    
     strcpy(pList->pbd[pList->size].nombre, name);
     pList->pbd[pList->size].numRegistros = size;
     pList->pbd[pList->size].registro = (estudiante *)malloc(sizeof(estudiante)*size);
@@ -130,4 +141,12 @@ void sdb(char name[30]){
     if(pList->sel==0){
         printf("Esta BD no existe\n");
     }
+}
+
+void gdb(){
+    if(pList->sel==0){
+        printf("No hay ninguna BD seleccionada\n");
+        return;
+    }
+    printf("BD activa - Nombre: %s - Tamaño: %d - Registros disponibles: %d\n", pList->pbdActual->nombre, pList->pbdActual->numRegistros, (pList->pbdActual->numRegistros - pList->pbdActual->size));
 }
