@@ -78,6 +78,21 @@ int main(void){
         else if (strcmp(comando, "svdb")==0){
             svdb();
         }
+        else if (strcmp(comando, "radb")==0){
+            radb();
+        }
+        else if(strcmp(comando, "rsdb")==0){
+            rsdb();
+        }
+        else if (strcmp(comando, "mreg")==0){
+            fscanf(stdin, "%d %s %d", &par2, par1, &par3);
+            mreg(par2, par1, par3);
+        }
+        else if(strcmp(comando, "rr")==0){
+            fscanf(stdin, "%d", &par2);
+            rr(par2);
+        }
+        getc(stdin);
 
     } while (strcmp(comando, "exit")!=0);
     destroyP();
@@ -172,4 +187,61 @@ void svdb(){
         fprintf(on_file, "%d %s %d\n", pList->pbdActual->registro[i].cedula, pList->pbdActual->registro[i].nombre, pList->pbdActual->registro[i].semestre);
     }
     printf("Se guardo correctamente la BD\n");
+}
+
+void radb(){
+    if(pList->sel==0){
+        printf("No hay ninguna BD seleccionada\n");
+        return;
+    }
+    printf("Base de datos: %s\n", pList->pbdActual->nombre);
+    for (int i = 0; i < pList->pbdActual->size; i++)
+    {
+        printf("%d %s %d\n", pList->pbdActual->registro[i].cedula, pList->pbdActual->registro[i].nombre, pList->pbdActual->registro[i].semestre);
+    }
+}
+
+void rsdb(){
+    if(pList->sel==0){
+        printf("No hay ninguna BD seleccionada\n");
+        return;
+    }
+    printf("Base de datos: %s - Registros Actuales: %d\n", pList->pbdActual->nombre, pList->pbdActual->size);
+}
+
+void mreg(int ced, char nombre[30], int semestre){
+    if(pList->sel==0){
+        printf("No hay ninguna BD seleccionada\n");
+        return;
+    }
+    if(pList->pbdActual->size==pList->pbdActual->numRegistros){
+        printf("La base de datos ya esta en su capacidad total\n");
+        return;
+    }
+    for (int i = 0; i < pList->pbdActual->size; i++)
+    {
+        if(pList->pbdActual->registro[i].cedula==ced){
+            printf("Ya hay un registro con este numero de cedula\n");
+            return;
+        }
+    }
+    
+    int i = pList->pbdActual->size;
+    pList->pbdActual->registro[i].cedula = ced;
+    strcpy(pList->pbdActual->registro[i].nombre, nombre);
+    pList->pbdActual->registro[i].semestre = semestre;
+    pList->pbdActual->size = ++i;
+    printf("Se registro correctamente la informacion en la BD %s\n", pList->pbdActual->nombre);
+}
+
+void rr(int par2){
+    for (int i = 0; i < pList->pbdActual->size; i++)
+    {
+        if(pList->pbdActual->registro[i].cedula==par2){
+            printf("BD %s\n", pList->pbdActual->nombre);
+            printf("%d %s %d\n", pList->pbdActual->registro[i].cedula, pList->pbdActual->registro[i].nombre, pList->pbdActual->registro[i].semestre);
+            return;
+        }
+    }
+    printf("No se encontro el registro\n");
 }
