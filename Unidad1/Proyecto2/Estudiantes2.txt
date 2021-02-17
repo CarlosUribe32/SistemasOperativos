@@ -1,1 +1,6 @@
-Estudiantes2 7 0
+Estudiantes2 7 5
+1 Tomas 4
+2 Arturo 7
+3 Luisa 8
+4 Angie 2
+5 Murawa 5

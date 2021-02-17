@@ -95,6 +95,12 @@ int main(void){
         getc(stdin);
 
     } while (strcmp(comando, "exit")!=0);
+    if(pList->sel==1){
+        printf("Tienes activada la BD %s. ¿Quiere salvar la BD? (Ingrese SI o cualquier letra)\n", pList->pbdActual->nombre);
+        scanf("%s", comando);
+        if (strcmp(comando, "SI")==0)
+            svdb();
+    }
     destroyP();
 }
 
@@ -235,6 +241,10 @@ void mreg(int ced, char nombre[30], int semestre){
 }
 
 void rr(int par2){
+    if(pList->sel==0){
+        printf("No hay ninguna BD seleccionada\n");
+        return;
+    }
     for (int i = 0; i < pList->pbdActual->size; i++)
     {
         if(pList->pbdActual->registro[i].cedula==par2){
