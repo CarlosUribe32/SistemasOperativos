@@ -1,4 +1,4 @@
 Estudiantes 5 3
 1 Carlos 5
-2 Andres 5
-3 Alberto 4
+2 Miguel 6
+3 Jean 5
