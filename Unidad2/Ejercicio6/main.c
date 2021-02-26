@@ -10,11 +10,12 @@ int main(void){
     for (int i = 1; i <= 3; i++)
     {
         pid_hijo = fork();
-        wait();
         if(pid_hijo==0){
             printf("Hijo %d", i);
             break;
         }
+        else
+            wait(NULL);
     }
 
     if(pid_hijo==0){
