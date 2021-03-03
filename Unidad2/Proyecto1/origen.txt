@@ -1,5 +1,8 @@
 carlos 5
 Andres 1
+Antonio -3
 Camilo 10
 Jose 9
+Marco 53
 Sebatian 3
+Juan -1

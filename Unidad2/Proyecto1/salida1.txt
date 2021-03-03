@@ -1,0 +1,8 @@
+Marco 53
+Camilo 10
+Jose 9
+carlos 5
+Sebatian 3
+Andres 1
+Juan -1
+Antonio -3

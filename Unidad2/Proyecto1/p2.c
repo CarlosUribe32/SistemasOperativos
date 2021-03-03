@@ -3,7 +3,7 @@
 #include <unistd.h>
 #include <string.h>
 
-char checkOf(FILE *archivo){
+char checkOf(FILE *archivo){ //Creditos a Manguito
     char ch;
     ch = fgetc(archivo);
     ch = fgetc(archivo);
@@ -24,10 +24,9 @@ int main(int argc, char *argv[]){
     int id=0;
 
     FILE *in_file = fopen(argv[1], "r");
-    FILE *on_file = fopen(argv[2], "w");
 
-    if(in_file == NULL || on_file==NULL){
-        printf("No se puede abrir %s o %s\n", argv[1], argv[2]);
+    if(in_file == NULL){
+        printf("No se puede abrir %s\n", argv[1]);
         exit(8);
     }
     while(ch!=EOF){
@@ -46,6 +45,7 @@ int main(int argc, char *argv[]){
         return 0;
     }
     if(cont<=100){
+        FILE *on_file = fopen(argv[3], "w");
         fila *pFila = (fila*)malloc(sizeof(fila)*cont);
         for (int i = 0; i < cont; i++)
         {
@@ -57,12 +57,11 @@ int main(int argc, char *argv[]){
         {
             fprintf(on_file, "%s %d\n", pFila[i].clave, pFila[i].valor);
         }
-       
         free(pFila);
+        fclose(on_file);
     }
     else
         printf("Este archivo tiene mas de 100 lineas\n");
     fclose(in_file);
-    fclose(on_file);
     return 0;
 }
