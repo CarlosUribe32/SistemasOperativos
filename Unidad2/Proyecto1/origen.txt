@@ -1,0 +1,5 @@
+carlos 5
+Andres 1
+Camilo 10
+Jose 9
+Sebatian 3

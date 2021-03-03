@@ -53,7 +53,6 @@ int main(int argc, char *argv[]){
             strcpy(pFila[i].clave, s1);
             pFila[i].valor = s2;
         }
-        quicksort(pFila, 0, cont - 1);
         for (int i = cont-1; i >= 0; i--)
         {
             fprintf(on_file, "%s %d\n", pFila[i].clave, pFila[i].valor);
@@ -66,37 +65,4 @@ int main(int argc, char *argv[]){
     fclose(in_file);
     fclose(on_file);
     return 0;
-}
-
-//Implementacion del QuickSort
-void intercambiar(fila *a, fila *b) {
-  fila temporal = *a;
-  *a = *b;
-  *b = temporal;
-}
-void quicksort(fila * arreglo, int izquierda, int derecha) {
-  if (izquierda < derecha) {
-    int indiceParticion = particion(arreglo, izquierda, derecha);
-    quicksort(arreglo, izquierda, indiceParticion);
-    quicksort(arreglo, indiceParticion + 1, derecha);
-  }
-}
-int particion(fila * arreglo, int izquierda, int derecha) {
-  fila pivote = arreglo[izquierda];
-  while (1) {
-    while (arreglo[izquierda].valor < pivote.valor) {
-      izquierda++;
-    }
-    while (arreglo[derecha].valor > pivote.valor) {
-      derecha--;
-    }
-    if (izquierda >= derecha) {
-      return derecha;
-    } 
-    else {
-      intercambiar(&arreglo[izquierda], &arreglo[derecha]);
-      izquierda++;
-      derecha--;
-    }
-  }
 }
