@@ -94,7 +94,7 @@ int main(void){
     }
     getc(stdin);
     free(pbd->registro);
-    free(pbd);
+    // free(pbd);
     return 0;
 }
 
