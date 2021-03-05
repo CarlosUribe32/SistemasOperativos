@@ -1,6 +1,9 @@
 Marco 53
+Santiago 24
+Maria 20
 Camilo 10
 Jose 9
+Pedro 8
 carlos 5
 Sebatian 3
 Andres 1

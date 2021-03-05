@@ -1,0 +1,5 @@
+Carlos estudiante 19
+Isabel pastelera 17
+Alexander florista 43
+Alejandro mecanico 20
+Camilo profesor 19
