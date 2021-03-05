@@ -129,9 +129,16 @@ int main(int argc, char *argv[]){
     p1.on_file = on_file1;
     p1.cont = cont;
     p1.pFila = pFila;
+
     p2.on_file = on_file2;
     p2.cont = cont;
-    p2.pFila = pFila;
+    p2.pFila = (fila *)malloc(sizeof(fila)*cont);
+    for (int i = 0; i < cont; i++)
+    {
+      p2.pFila[i] = pFila[i];
+    }
+    
+    // printf("%d %d\n",(int)p1.pFila, (int)p2.pFila);
     //Hilos en paralelo
     pthread_create(&id_hilo_1, NULL, &ordenInverso, &p1);
     pthread_create(&id_hilo_2, NULL, &ordenAlfabetico, &p2);
@@ -161,5 +168,6 @@ int main(int argc, char *argv[]){
     fclose(on_file1);
     fclose(on_file2);
     free(pFila);
+    free(p2.pFila);
     return 0;
 }
