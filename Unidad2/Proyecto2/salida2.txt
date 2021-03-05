@@ -1,8 +1,8 @@
-Carlos estudiante 19
 Angel desarrollador 20
-Isabel pastelera 17
+Carlos estudiante 19
 Alexander florista 43
-Juan zapatero 31
-Alejandro mecanico 20
-Camilo profesor 19
 Felipe ganadero 41
+Alejandro mecanico 20
+Isabel pastelera 17
+Camilo profesor 19
+Juan zapatero 31
