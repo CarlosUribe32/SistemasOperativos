@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
         fscanf(in_file, "%s %s %d", s1, s2, &s3);
         cont++;
         if(s3<0){
-            printf("La edad en la fila %d es invalida\n", s3);
+            printf("La edad en la fila %d es invalida\n", cont);
             return 0;
         }
         ch = checkOf(in_file);
