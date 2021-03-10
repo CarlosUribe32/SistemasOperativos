@@ -5,8 +5,10 @@ Isabel pastelera 17
 Alexander florista 43
 Juan zapatero 31
 Cortes joyero 43
+Angie bombera 27
 Alejandro mecanico 20
 Camilo profesor 19
 Felipe ganadero 41
+Sebastian agricultor 52
 Manuela programadora 23
 Helver mesero 53
