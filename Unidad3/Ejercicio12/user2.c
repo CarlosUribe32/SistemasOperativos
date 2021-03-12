@@ -23,19 +23,21 @@ void *escritura(void * p1){
     close(fd);
 }
 void *lectura(void *p2){
-    int fd, id;
+    int fd, status;
     Parametros *p = (Parametros *)p2;
     char arr[80];
+    fd = open(p->myfifo, O_RDONLY);
     while(1){
-        fd = open(p->myfifo, O_RDONLY);
-        read(fd, arr, sizeof(arr));
-        printf("User1: %s\n", arr);
-        close(fd);
+        status = read(fd, arr, sizeof(arr));
+        if(status!=0)
+            printf("User1: %s\n", arr);
+        else
+            sleep(1); //Mimase un ratico mientras venga el otro
     }
+    close(fd);
 }
 
 int main(){
-    int fd;
     char * myfifo = "/tmp/myfifo";
     char * myfifo2 = "/tmp/myfifo2";
     mkfifo(myfifo, 0666);
