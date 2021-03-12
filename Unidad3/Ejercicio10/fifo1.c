@@ -37,7 +37,7 @@ int main()
         fd = open(myfifo, O_RDONLY); 
   
         // Read from FIFO 
-        read(fd, arr1, sizeof(arr1)); 
+        read(fd, arr1, sizeof(arr1));
   
         // Print the read message 
         printf("User2: %s\n", arr1); 
