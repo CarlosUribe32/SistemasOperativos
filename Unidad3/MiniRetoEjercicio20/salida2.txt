@@ -1,0 +1,7 @@
+Mura fullstack 20
+Carlos Ingeniero 21
+Angel Desarrollador 21
+Patricia Medica 26
+Manuel bombero 31
+Bernardo Alfarero 38
+Isabel enfermera 45
