@@ -45,6 +45,25 @@ void *escritura(){
     system("rm msgq1-2.txt");
     return 0;
 }
+void *lectura(){
+    //Conectamos con la cola 2
+    while ((msqid2 = msgget(key2, PERMS)) == -1) {
+        sleep(1);
+        // perror("msgget lectura");
+        // exit(1);
+    }
+    while(1){
+        //Leemos el mensaje
+        while (msgrcv(msqid2, &buf2, sizeof(buf2.mtext), 0, 0) == -1) {
+            sleep(1);
+            msqid2 = msgget(key2, PERMS);//Volviendo a conectar...
+            // perror("msgrcv");
+            // exit(1);
+        }
+        printf("Usuario 2: \"%s\"\n", buf2.mtext);
+    }
+    return 0;
+}
 
 int main(void){
     pthread_t hilo1, hilo2;
@@ -56,6 +75,8 @@ int main(void){
       exit(1);
     }
     pthread_create(&hilo1, NULL, &escritura, NULL);
+    pthread_create(&hilo2, NULL, &lectura, NULL);
     
+    //Esperamos solo el hilo de escritura
     pthread_join (hilo1, NULL);
 }

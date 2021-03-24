@@ -39,6 +39,31 @@ void *lectura(){
     }
     return 0;
 }
+void *escritura(){
+    int len;
+    //Creamos la cola de mensajes 2
+    if ((msqid2 = msgget(key2, PERMS | IPC_CREAT)) == -1) {
+      perror("msgget escritura");
+      exit(1);
+    }
+    buf2.mtype = 1;
+    printf("Ingrese ^D si quiere salir del chat\n");
+    while(fgets(buf2.mtext, sizeof buf2.mtext, stdin) != NULL){
+        len = strlen(buf2.mtext);
+        if (buf2.mtext[len-1] == '\n') 
+            buf2.mtext[len-1] = '\0';
+        //Enviamos el mensaje por la cola 2
+        if (msgsnd(msqid2, &buf2, len+1, 0) == -1)
+             perror("msgsnd escritura");
+    }
+    //Destruimos la cola 2
+    if (msgctl(msqid2, IPC_RMID, NULL) == -1) {
+        perror("msgctl escritura");
+        exit(1);
+    }
+    system("rm msgq2-1.txt");
+    return 0;
+}
 
 int main(void){
     pthread_t hilo1, hilo2;
@@ -51,6 +76,8 @@ int main(void){
       exit(1);
     }
     pthread_create(&hilo1, NULL, &lectura, NULL);
+    pthread_create(&hilo2, NULL, &escritura, NULL);
     
-    pthread_join (hilo1, NULL);
+    //Esperamos solo el hilo de escritura
+    pthread_join (hilo2, NULL);
 }
