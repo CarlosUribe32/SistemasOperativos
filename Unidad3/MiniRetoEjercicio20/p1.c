@@ -150,7 +150,6 @@ int main(int argc, char *argv[]){
         printf("%s %s %d\n", s1, s2, s3);
     }
     //Cerramos el semaforo
-    // printf("Hola\n");
     if(sem_close(sem2)==-1){
         perror("pSemPost sem_close fails: ");
         exit(EXIT_FAILURE);
