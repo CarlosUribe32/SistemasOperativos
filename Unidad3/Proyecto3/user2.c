@@ -48,6 +48,44 @@ void *lectura(){
     }
     return 0;
 }
+void *escritura(){
+    char* ptr;
+    char buf[SH_SIZE];
+    printf("Ingrese ^D si quiere salir del chat\n");
+    while (1){
+        //Mapeamos
+        map2 = mmap(NULL, SH_SIZE, PROT_WRITE, MAP_SHARED, shm_fd2, 0);
+        if (map2 == MAP_FAILED) {
+            perror("Mapping failed escritura: ");
+            exit(EXIT_FAILURE);
+        }
+        ptr = (char*)map2;
+        if(fgets(buf, SH_SIZE, stdin) == NULL)
+            break;
+        for (int i = 0; i < SH_SIZE; i++){
+            ptr[i] = buf[i];
+        }
+
+        //Desmapeamos
+        if (munmap(ptr, SH_SIZE) < 0) {
+            perror("Unmapping failed escritura: ");
+            exit(EXIT_FAILURE);
+        }
+        //Abrimos el candado
+        if(sem_post(sem2)==-1){
+            perror("pSemPost sem_post error escritura: ");
+            exit(EXIT_FAILURE);
+        }
+        //Cerramos nosotros el candado
+        if(sem_wait(sem2_2)==-1){
+            perror("sem_wait: ");
+            exit(EXIT_FAILURE);
+        }
+    }
+    apagarSemaforos();
+    cerrarEspaciosMemoria();
+    return 0;
+}
 
 void prenderSemaforos(){
     //Abrimos los semaforos
@@ -98,7 +136,7 @@ void apagarSemaforos(){
         perror("user2 sem_close fails: ");
         exit(EXIT_FAILURE);
     }
-    //Destruimos el semaforo 1
+    //Destruimos el semaforo 2
     if(sem_unlink("semaforo2-1")==-1){
         perror("user2 sem_unlink fails: ");
         exit(EXIT_FAILURE);
@@ -111,7 +149,7 @@ void apagarSemaforos(){
 }
 void abrirEspaciosMemoria(){
     //Abrimos los espacios en memoria
-    shm_fd1 = shm_open("shm1-2", O_RDONLY, 0600);
+    shm_fd1 = shm_open("shm1-2", O_RDWR, 0600);
     if (shm_fd1 < 0) {
         shm_fd1 = shm_open("shm1-2", O_CREAT | O_RDWR, 0600);
         if (shm_fd1 < 0) {
@@ -123,7 +161,7 @@ void abrirEspaciosMemoria(){
             exit(EXIT_FAILURE);
         }
     }
-    shm_fd2 = shm_open("shm2-1", O_RDONLY, 0600);
+    shm_fd2 = shm_open("shm2-1", O_RDWR, 0600);
     if (shm_fd2 < 0) {
         shm_fd2 = shm_open("shm2-1", O_CREAT | O_RDWR, 0600);
         if (shm_fd2 < 0) {
@@ -157,10 +195,10 @@ int main(void){
     prenderSemaforos();
     abrirEspaciosMemoria();
     
-    //pthread_create(&hilo1, NULL, &escritura, NULL);
+    pthread_create(&hilo1, NULL, &escritura, NULL);
     pthread_create(&hilo2, NULL, &lectura, NULL);
     
     //Esperamos solo el hilo de escritura
-    pthread_join (hilo2, NULL);
+    pthread_join (hilo1, NULL);
     return 0;
 }
