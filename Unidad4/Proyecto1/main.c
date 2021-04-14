@@ -15,13 +15,13 @@ void unix_error(char *msg)
     fprintf(stderr, "%s: %s\n", msg, strerror(errno));
     exit(0);
 }
-void analizarDirectorio(char dir[30]){
+void analizarDirectorio(char dir[256]){
     stat(dir, &stat_str);
     return 0;
 }
 
-void imprimirRegistros(char dir[30]){
-    char subdir[30];
+void imprimirRegistros(char dir[256]){
+    char subdir[256];
     cont++;
     DIR *streamp; 
     struct dirent *dep;
