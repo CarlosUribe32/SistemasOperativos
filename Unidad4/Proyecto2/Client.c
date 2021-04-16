@@ -46,7 +46,12 @@ int main(int argc, char *argv[]){
     char buf[BUF_SIZE];
     int status;
     int server_sd;
-    char msg[BUF_SIZE] = "Cliente1: ";
+    char msg[BUF_SIZE];
+    char a=0;
+    printf("Ingrese su nombre de usuario por favor\n");
+    scanf("%s", msg);
+    scanf("%c", &a);
+    strcat(msg, ": ");
     pthread_t rxThreadId;
     struct client_t client;
 
