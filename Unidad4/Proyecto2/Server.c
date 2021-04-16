@@ -19,11 +19,10 @@ struct client_t{
 
 int cont=0;
 struct client_t *client;
-struct client_t **activos;
+int sillas[10];
 
 void * readThread(void *arg){
     struct client_t *clientact = ((struct client_t *)arg);
-    activos[cont-1] = clientact;
     // printf("Punteros %p %p\n", activos[cont-1], clientact);
     ssize_t numOfBytes;
     char buf[BUF_SIZE];
@@ -33,16 +32,7 @@ void * readThread(void *arg){
 
     while(1){
         numOfBytes = read(clientact->socket, buf, BUF_SIZE);
-        printf("Socket %d, %d num\n", clientact->socket, clientact->num);
-        for (int i = 1; i <= cont; i++)
-        {
-            printf("Socket %d, %d num\n", client[i-1].socket, client[i-1].num);
-            if(clientact->socket==client[i-1].socket && clientact->num!=client[i-1].num){
-                printf("Hola\n");
-                clientact->num = client[i-1].num;
-                break;
-            }
-        }
+        // printf("Socket %d, %d num\n", clientact->socket, clientact->num);
         if(0 == numOfBytes){
             printf("client closed the socket end\n");
             break;
@@ -58,10 +48,10 @@ void * readThread(void *arg){
                 memcpy(name, buf, 8);
             }
             else{
-                for (int i = 1; i <= cont; i++)
+                for (int i = 1; i <= 10; i++)
                 {
-                    if(clientact->num != client[i-1].num){
-                        printf("%d\n", clientact->num);
+                    if(clientact->num != client[i-1].num && sillas[i-1]!=0){
+                        // printf("%d\n", clientact->num);
                         status = write(client[i-1].socket, buf, strlen(buf)+1);
                         if(-1 == status){
                             perror("Server write to client fails: ");
@@ -75,14 +65,8 @@ void * readThread(void *arg){
     printf("%s se desconecto\n", name);
     idName=0;
     clientact->rxState = 0;
+    sillas[clientact->num-1] = 0;
     close(clientact->socket);
-    for (int i = clientact->num; i < cont; i++)
-    {
-        client[i-1] = client[i];
-        client[i-1].num = i;
-        activos[i-1] = activos[i];
-        activos[i-1]->num = i;
-    }
     cont--;
     return NULL;
 }
@@ -94,7 +78,6 @@ int main(int argc, char *argv[]){
     int client_sd;
     pthread_t *rxThreadId = malloc(sizeof(pthread_t)*10);
     client = malloc(sizeof(struct client_t)*10);
-    activos = malloc(sizeof(struct client_t)*10);
 
     // 1. Ignore SIGPIPE
     signal(SIGPIPE, SIG_IGN);
@@ -140,8 +123,9 @@ int main(int argc, char *argv[]){
     }
 
     printf("Server escuchando, se puede conectar\n");
-    while(cont<=10)
+    while(1)
     {
+        int silla=0;
         //Esperando por un cliente
         client_sd = accept(server_sd, NULL, NULL);
         cont++;
@@ -152,11 +136,21 @@ int main(int argc, char *argv[]){
             exit(EXIT_FAILURE);
         }
 
-        client[cont-1].socket = client_sd;
-        client[cont-1].rxState = 1;
-        client[cont-1].num = cont;
+        for (int i = 1; i <= 10; i++)
+        {
+            if(sillas[i-1]==0){
+                sillas[i-1]=1;
+                silla=i;
+                break;
+            }
+        }
+        
+        printf("%d\n", silla);
+        client[silla-1].socket = client_sd;
+        client[silla-1].rxState = 1;
+        client[silla-1].num = silla;
 
-        status = pthread_create(&(rxThreadId[cont-1]),NULL,&readThread,&(client[cont-1]));
+        status = pthread_create(&(rxThreadId[silla-1]),NULL,&readThread,&(client[silla-1]));
         if(-1 == status){
             perror("Pthread read fails: ");
             close(server_sd);
