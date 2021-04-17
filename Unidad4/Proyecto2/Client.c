@@ -34,6 +34,8 @@ void * readThread(void *arg){
         }
         else{
             printf("%s\n",buf);
+            if(strcmp(buf, "El servidor te desconecto\n")==0)
+                break;
         }
     }
     printf("Terminate Pthread for reading\n");
@@ -43,6 +45,7 @@ void * readThread(void *arg){
 
 int main(int argc, char *argv[]){
 
+    char name[20];
     char buf[BUF_SIZE];
     int status;
     int server_sd;
@@ -51,6 +54,7 @@ int main(int argc, char *argv[]){
     printf("Ingrese su nombre de usuario por favor\n");
     scanf("%s", msg);
     scanf("%c", &a);
+    strcpy(name, msg);
     strcat(msg, ": ");
     pthread_t rxThreadId;
     struct client_t client;
@@ -95,8 +99,7 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
 
-    char name[10];
-    memcpy(name, msg, 8);
+    
     status = write(client.socket, name, strlen(name)+1);
     if(-1 == status){
         perror("Server write to client fails: ");

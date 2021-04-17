@@ -15,10 +15,12 @@ struct client_t{
     int socket;
     int rxState;
     int num;
+    char name[20];
 };
 
 int cont=0;
 struct client_t *client;
+pthread_t *rxThreadId;
 int sillas[10];
 
 void * readThread(void *arg){
@@ -28,7 +30,7 @@ void * readThread(void *arg){
     char buf[BUF_SIZE];
     int status;
     int idName = 0;
-    char name[10];
+    char name[20];
 
     while(1){
         numOfBytes = read(clientact->socket, buf, BUF_SIZE);
@@ -38,31 +40,45 @@ void * readThread(void *arg){
             break;
         }
         else if(-1 == numOfBytes){
-            perror("ReadThread read() fails: ");
-            break;
+            //printf("Desconectado %s \n", clientact->name);
+            return 0;
         }
-        else{
+        else if(sillas[clientact->num-1]==1){
             //printf("Cliente %d: %s\n",clientact->num,buf);
             if(idName==0){
                 idName=1;
-                memcpy(name, buf, 8);
+                strcpy(name, buf);
+                strcpy(clientact->name, name);
+                strcat(buf, " se ha unido a la conversacion\n");
             }
-            else{
-                for (int i = 1; i <= 10; i++)
-                {
-                    if(clientact->num != client[i-1].num && sillas[i-1]!=0){
-                        // printf("%d\n", clientact->num);
-                        status = write(client[i-1].socket, buf, strlen(buf)+1);
-                        if(-1 == status){
-                            perror("Server write to client fails: ");
-                            break;
-                        }
+            for (int i = 1; i <= 10; i++)
+            {
+                if(clientact->num != client[i-1].num && sillas[i-1]!=0){
+                    // printf("%d\n", clientact->num);
+                    status = write(client[i-1].socket, buf, strlen(buf)+1);
+                    if(-1 == status){
+                        perror("Server write to client fails: ");
+                        break;
                     }
                 }
-            }       
+            }
+                 
         }
     }
-    printf("%s se desconecto\n", name);
+    strcpy(buf, name);
+    strcat(buf, " se desconecto\n");
+    printf("%s ", buf);
+    for (int i = 1; i <= 10; i++)
+    {
+        if(clientact->num != client[i-1].num && sillas[i-1]!=0){
+            // printf("%d\n", clientact->num);
+            status = write(client[i-1].socket, buf, strlen(buf)+1);
+            if(-1 == status){
+                perror("Server write to client fails: ");
+                break;
+            }
+        }
+    }
     idName=0;
     clientact->rxState = 0;
     sillas[clientact->num-1] = 0;
@@ -71,12 +87,49 @@ void * readThread(void *arg){
     return NULL;
 }
 
+void *comandos(){
+    char comand[20];
+    printf("Los comandos para el server son los siguientes:\n1. list para listar los usuarios conectados\n2. <username> para desconectar el usuario\n");
+    while(1){
+        scanf("%s", comand);
+        if(strcmp(comand, "list")==0){
+            printf("\n");
+            for (int i = 0; i < 10; i++){
+                if(sillas[i] == 1){
+                    printf("Username: %s\nSocket: %d\nNum: %d\n---------------------\n", client[i].name, client[i].socket, client[i].num);
+                }
+            }    
+        }
+        else{
+            for (int i = 0; i < 10; i++){
+                if(strcmp(comand, client[i].name)==0){
+                    char buf[BUF_SIZE];
+                    int status;
+                    strcpy(buf, "El servidor te desconecto\n");
+                    status = write(client[i].socket, buf, strlen(buf)+1);
+                    if(-1 == status){
+                        perror("Server write to client fails: ");
+                        break;
+                    }
+                    client[i].rxState = 0;
+                    sillas[i] = 0;
+                    close(client[i].socket);
+                    printf("Desconectado\n");
+                    cont--;
+                    break;
+                }
+            }            
+        }
+    }
+}
+
 int main(int argc, char *argv[]){
     int status;
     int enable = 1;
     int server_sd;
     int client_sd;
-    pthread_t *rxThreadId = malloc(sizeof(pthread_t)*10);
+    rxThreadId = malloc(sizeof(pthread_t)*10);
+    pthread_t *comandThreadId;
     client = malloc(sizeof(struct client_t)*10);
 
     // 1. Ignore SIGPIPE
@@ -123,38 +176,57 @@ int main(int argc, char *argv[]){
     }
 
     printf("Server escuchando, se puede conectar\n");
+    status = pthread_create(&comandThreadId, NULL, &comandos, NULL);//Crear hilo que recibira comandos
+    if(-1 == status){
+        perror("Pthread read fails: ");
+        close(server_sd);
+        exit(EXIT_FAILURE);
+    }
     while(1)
     {
         int silla=0;
         //Esperando por un cliente
         client_sd = accept(server_sd, NULL, NULL);
-        cont++;
-        printf("Cliente %d conectado\n", cont);
-        if(-1 == client_sd){
-            perror("Accept fails: ");
-            close(server_sd);
-            exit(EXIT_FAILURE);
-        }
+        if(cont<10){
+            cont++;
+            printf("Cliente %d conectado\n", cont);
+            if(-1 == client_sd){
+                perror("Accept fails: ");
+                close(server_sd);
+                exit(EXIT_FAILURE);
+            }
 
-        for (int i = 1; i <= 10; i++)
-        {
-            if(sillas[i-1]==0){
-                sillas[i-1]=1;
-                silla=i;
-                break;
+            for (int i = 1; i <= 10; i++)
+            {
+                if(sillas[i-1]==0){
+                    sillas[i-1]=1;
+                    silla=i;
+                    break;
+                }
+            }
+            
+            //printf("%d\n", silla);
+            client[silla-1].socket = client_sd;
+            client[silla-1].rxState = 1;
+            client[silla-1].num = silla;
+
+            status = pthread_create(&(rxThreadId[silla-1]),NULL,&readThread,&(client[silla-1]));
+            if(-1 == status){
+                perror("Pthread read fails: ");
+                close(server_sd);
+                exit(EXIT_FAILURE);
             }
         }
-        
-        printf("%d\n", silla);
-        client[silla-1].socket = client_sd;
-        client[silla-1].rxState = 1;
-        client[silla-1].num = silla;
-
-        status = pthread_create(&(rxThreadId[silla-1]),NULL,&readThread,&(client[silla-1]));
-        if(-1 == status){
-            perror("Pthread read fails: ");
-            close(server_sd);
-            exit(EXIT_FAILURE);
+        else{ //Rechazar conexion
+            char buf[BUF_SIZE];
+            int status;
+            strcpy(buf, "El servidor esta lleno, lo siento no se puede conectar\n");
+            status = write(client_sd, buf, strlen(buf)+1);
+            if(-1 == status){
+                perror("Server write to client fails: ");
+                break;
+            }
+            close(client_sd);
         }
     }
     
