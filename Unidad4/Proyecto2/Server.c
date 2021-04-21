@@ -228,6 +228,9 @@ int main(int argc, char *argv[]){
             }
             close(client_sd);
         }
+
     }
-    
+    free(client);
+    free(rxThreadId);
+    return 0;
 }
